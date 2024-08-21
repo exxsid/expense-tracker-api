@@ -1,5 +1,6 @@
 package com.lacortez.expensetrackerapi.controller;
 
+import com.lacortez.expensetrackerapi.exception.UserNotFoundException;
 import com.lacortez.expensetrackerapi.model.User;
 import com.lacortez.expensetrackerapi.service.impl.AuthServiceImpl;
 import com.lacortez.expensetrackerapi.service.impl.UserServiceImpl;
@@ -23,7 +24,7 @@ public class AuthController {
 
     @GetMapping("/foo")
     public String foo(){
-        return userService.getUses().toString();
+        return "foo";
     }
 
     @PostMapping("/signup")
@@ -38,5 +39,25 @@ public class AuthController {
         }
 
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<User> signIn(
+            @RequestParam String userName,
+            @RequestParam String password
+    ) {
+        try {
+            User user = authService.signIn(userName, password);
+
+            if (user == null) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+
     }
 }

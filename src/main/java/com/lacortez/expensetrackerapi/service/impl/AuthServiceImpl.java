@@ -17,6 +17,14 @@ import java.util.List;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthRepository authRepository;
+    private Argon2Function argon2Function = Argon2Function.getInstance(
+            2,
+            12,
+            2,
+            10,
+            Argon2.ID,
+            19
+    );
 
     @Autowired
     public AuthServiceImpl(AuthRepository authRepository) {
@@ -25,7 +33,18 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User signIn(String userName, String password) throws UserNotFoundException {
-        return null;
+        // get the user by userName
+        List<User> user = authRepository.findByUserName(userName);
+        // if the userName is not in the database
+        if (user.isEmpty()) throw new UserNotFoundException("User not found");
+
+        User currUser = user.get(0);
+        // get the salt of the user for password verification
+        String salt = currUser.getSalt();
+        String hashedPassword = currUser.getPassword();
+        boolean isMatch = Password.check(password, hashedPassword)
+                .with(argon2Function);
+        return isMatch ? currUser : null;
     }
 
     @Override
@@ -36,15 +55,8 @@ public class AuthServiceImpl implements AuthService {
             return null;
         }
         // hash the password for security
-        Argon2Function argon2Function = Argon2Function.getInstance(
-                2,
-                12,
-                2,
-                10,
-                Argon2.ID
-        );
         Hash hash = Password.hash(password)
-                .addRandomSalt()
+                .addRandomSalt(12)
                 .with(argon2Function);
         String hashedPassword = hash.getResult();
         String salt = hash.getSalt();
