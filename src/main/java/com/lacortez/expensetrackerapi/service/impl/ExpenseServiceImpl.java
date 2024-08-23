@@ -30,7 +30,9 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public Expense getExpense(Long expenseId) throws ExpenseNotFoundException {
-        return null;
+        List<Expense> expense = expenseRepository.findByExpenseId(expenseId);
+        if (expense.isEmpty()) throw new ExpenseNotFoundException("No expense found");
+        return expense.get(0);
     }
 
     @Override
