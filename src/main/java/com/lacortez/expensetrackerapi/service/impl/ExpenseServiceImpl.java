@@ -36,8 +36,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Expense addExpense(Expense expense) {
-        return null;
+    public Expense addExpense(Expense expense) throws Exception {
+        if (expense.getAmount() <= 0) {
+            throw new Exception("Invalid expense amount");
+        }
+        Expense newExpense = expenseRepository.save(expense);
+
+        return newExpense;
     }
 
     @Override

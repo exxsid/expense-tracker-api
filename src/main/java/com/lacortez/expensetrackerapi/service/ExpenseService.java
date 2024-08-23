@@ -9,7 +9,7 @@ public interface ExpenseService {
 
     List<Expense> getExpenseList(Long userId);
     Expense getExpense(Long expenseId) throws ExpenseNotFoundException;
-    Expense addExpense(Expense expense);
+    Expense addExpense(Expense expense) throws Exception;
     Expense updateExpense(Expense newExpense);
     Expense deleteExpense(Long expenseId);
 
