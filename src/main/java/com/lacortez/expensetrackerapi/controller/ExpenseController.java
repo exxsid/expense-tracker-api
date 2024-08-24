@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 @RestController
@@ -62,6 +63,19 @@ public class ExpenseController {
             Expense newExpense = expenseService.addExpense(expense);
 
             return new ResponseEntity<>(newExpense, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Expense> updateExpense(@RequestBody Expense newExpense) {
+        try {
+            Expense updatedExpense = expenseService.updateExpense(newExpense);
+            if (updatedExpense == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(updatedExpense, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
