@@ -80,4 +80,16 @@ public class ExpenseController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/delete/{expenseId}")
+    public ResponseEntity<Boolean> deleteExpense (
+            @PathVariable Long expenseId
+    ) {
+        Expense expense = expenseService.deleteExpense(expenseId);
+        if (expense == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 }

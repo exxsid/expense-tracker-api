@@ -65,7 +65,16 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public Expense deleteExpense(Long expenseId) {
-        return null;
+        if (expenseId < 1) {
+            return null;
+        }
+
+        List<Expense> deletedExpense = expenseRepository.deleteByExpenseId(expenseId);
+        if (deletedExpense.isEmpty()) {
+            return null;
+        }
+
+        return deletedExpense.get(0);
     }
 
 

@@ -31,4 +31,8 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
                       @Param("note") String note,
                       @Param("description") String description);
 
+    @Modifying
+    @Transactional
+    List<Expense> deleteByExpenseId(Long expenseId);
+
 }
